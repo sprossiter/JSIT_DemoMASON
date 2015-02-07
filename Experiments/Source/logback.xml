@@ -4,6 +4,7 @@
      
     ****************************************************************************       
     Copyright 2015 University of Southampton
+    Copyright 2015 University of Southampton (original JSIT file)
         
     This file is part of JSIT_DemoMASON.
 
@@ -23,19 +24,13 @@
     
     For JSIT users, this can be used to configure whether an events log is
     produced, and the level of diagnostics messages produced in the diagnostics
-    log and on the console.
-
-    **USERS**: JSIT users should customise this file as indicated in comment
-    entries prefixed **USERS**. See the JSIT User Guide for more details.
+    log and on the console. All intended user customisation is in the User
+    Customisation section.
 -->
 
 <configuration>
 
   <!-- *********** FIXED CONFIGURATION SETTINGS: DO NOT CHANGE ************ -->
-
-  <!--  Enable line for trace of Logback actions
-  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
-  -->
 
   <!-- Sifting appenders to create per sim-instance (thread) log files. We will
        replace the encoder programmatically later. (Logback
@@ -43,12 +38,12 @@
 
   <appender name="MSGS_RUN_SIFTER" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
-        <key>runID</key>
-        <defaultValue>missingRunID</defaultValue>
+        <key>runOutPath</key>
+        <defaultValue>missingOutputsPath</defaultValue>
     </discriminator>
     <sift>
-        <appender name="${runID}_Msgs" class="ch.qos.logback.core.FileAppender">
-            <file>Experiments/Outputs/${runID}/modelDiagnostics.log</file>
+        <appender name="${runOutPath}_Msgs" class="ch.qos.logback.core.FileAppender">
+            <file>${runOutPath}/modelDiagnostics.log</file>
             <append>false</append>
             <encoder>
                 <pattern>%msg%n</pattern>
@@ -65,12 +60,12 @@
 
   <appender name="EVENTS_RUN_SIFTER" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
-        <key>runID</key>
-        <defaultValue>missingRunID</defaultValue>
+        <key>runOutPath</key>
+        <defaultValue>missingOutputsPath</defaultValue>
     </discriminator>
     <sift>
-        <appender name="${runID}_Events" class="ch.qos.logback.core.FileAppender">
-            <file>Experiments/Outputs/${runID}/modelEvents.log</file>
+        <appender name="${runOutPath}_Events" class="ch.qos.logback.core.FileAppender">
+            <file>${runOutPath}/modelEvents.log</file>
             <append>false</append>
             <encoder>
                 <pattern>%msg%n</pattern>
@@ -84,10 +79,15 @@
 
   <!-- ******************** USER CONFIGURATION SETTINGS ******************** -->
 
-  <!-- Diagnostics messages from the JSIT framework: default level INFO. Change
-  	   to DEBUG or TRACE for more information (or WARN or ERROR for less information) -->
+  <!--  Enable line for trace of Logback actions
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+  -->
 
-  <logger name="uk.ac.soton.simulation.jsit" level="DEBUG" additivity="false">
+  <!-- Diagnostics messages from the JSIT framework: default level INFO. Change
+       to DEBUG or TRACE for more information
+       (or WARN or ERROR for less information) -->
+
+  <logger name="uk.ac.soton.simulation.jsit" level="INFO" additivity="false">
     <appender-ref ref="MSGS_RUN_SIFTER" />
     <appender-ref ref="CONSOLE" />
   </logger>

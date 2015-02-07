@@ -28,26 +28,26 @@ import java.io.File;
  * the default parameter values).
  */
 public class DefaultDemo {
-	
-	public static void main(String[] args) {
-			
-		// Useful to check working directory is where you think it is and that
-		// correct set of libraries on the classpath
-		System.out.println("Working dir: " + new File(".").getAbsolutePath());
-		System.out.println("Classpath: " + System.getProperty("java.class.path"));
-		
-		if (args.length != 1 || !(args[0].equals("GUI") || args[0].equals("NOGUI"))) {
-			throw new IllegalArgumentException("Requires one GUI or NOGUI argument");
-		}	
-		
-		if (args[0].equals("GUI")) {
-			new HeatBugsWithUI().createController();
-		}
-		else {
-			SimState.doLoop(HeatBugs.class, args);
-			System.exit(0);
-		}
+    
+    public static void main(String[] args) {
+            
+        // Useful to check working directory is where you think it is and that
+        // correct set of libraries on the classpath
+        System.out.println("Working dir: " + new File(".").getAbsolutePath());
+        System.out.println("Classpath: " + System.getProperty("java.class.path"));
+        
+        if (args.length != 1 || !(args[0].equals("GUI") || args[0].equals("NOGUI"))) {
+            throw new IllegalArgumentException("Requires one GUI or NOGUI argument");
+        }    
+        
+        if (args[0].equals("GUI")) {
+            new HeatBugsWithUI().createController();
+        }
+        else {
+            SimState.doLoop(HeatBugs.class, args);
+            System.exit(0);
+        }
 
-	}
+    }
 
 }
