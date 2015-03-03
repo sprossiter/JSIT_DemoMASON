@@ -43,7 +43,7 @@ import uk.ac.soton.simulation.jsit.core.EventManager;
 import uk.ac.soton.simulation.jsit.core.EventSource;
 import uk.ac.soton.simulation.jsit.core.MainModel;
 import uk.ac.soton.simulation.jsit.core.Sampler.NumericCategory;
-import uk.ac.soton.simulation.jsit.core.StochasticAccessorMDC;
+import uk.ac.soton.simulation.jsit.core.StandardStochasticAccessor;
 // JSIT--
 
 public /*strictfp*/ class HeatBugs extends SimState implements MainModel, EventSource<HeatBugs.EventType>
@@ -169,7 +169,8 @@ public /*strictfp*/ class HeatBugs extends SimState implements MainModel, EventS
         // instantiation time for a GUI-based run of the model)
         modelParms = ModelParms.createParmsFromModel(this);
         eventMgr = new EventManager();
-        HeatBugs.bugInitWidth.addForRun(new DistUniformDiscrete<NumericCategory>(0, gridWidth - 1));
+        bugInitWidth = new DistUniformDiscrete<NumericCategory>(0, gridWidth - 1);    
+        StandardStochasticAccessor.registerAccessorFreeStochItem(HeatBugs.class, "bugInitWidth", bugInitWidth);
         HeatBugs.bugInitHeight.addForRun(new DistUniformDiscrete<NumericCategory>(0, gridHeight - 1));
         try {
             modelInit.saveModelSettings();
@@ -200,7 +201,8 @@ public /*strictfp*/ class HeatBugs extends SimState implements MainModel, EventS
             bugs[x] = new HeatBug(random.nextDouble() * (maxIdealTemp - minIdealTemp) + minIdealTemp,
                 random.nextDouble() * (maxOutputHeat - minOutputHeat) + minOutputHeat,
                 randomMovementProbability, this);
-            int bugX = bugInitWidth.getForRun().sampleInt();
+            //int bugX = bugInitWidth.getForRun().sampleInt();
+            int bugX = bugInitWidth.sampleInt();
             int bugY = bugInitHeight.getForRun().sampleInt();
             buggrid.setObjectLocation(bugs[x], bugX, bugY);
             // JSIT--
@@ -272,12 +274,15 @@ public /*strictfp*/ class HeatBugs extends SimState implements MainModel, EventS
        
     private static final Logger logger = LoggerFactory.getLogger(HeatBugs.class);
     
-    // There will not be parallel runs in the same JVM so we don't need to use StochasticAccessorMDC
-    // 'wrappers'
-    private static StochasticAccessorMDC<DistUniformDiscrete<NumericCategory>> bugInitWidth
-             = new StochasticAccessorMDC<DistUniformDiscrete<NumericCategory>>(HeatBugs.class, "bugInitWidth");
-    private static StochasticAccessorMDC<DistUniformDiscrete<NumericCategory>> bugInitHeight
-             = new StochasticAccessorMDC<DistUniformDiscrete<NumericCategory>>(HeatBugs.class, "bugInitHeight");
+    // HeatBugs is a singleton, and there will not be parallel runs in the same JVM,
+    // so we don't need to use StochasticAccessorMDC accessors. However, 
+    // we use one for bugInitHeight just for illustrative purposes. (Imagine if
+    // this was in HeatBug instead and we had set things up so that multiple instances
+    // of HeatBugs models were fired off in parallel within the same JVM.)
+    
+    private DistUniformDiscrete<NumericCategory> bugInitWidth;
+    private final static StandardStochasticAccessor<DistUniformDiscrete<NumericCategory>> bugInitHeight
+         = new StandardStochasticAccessor<DistUniformDiscrete<NumericCategory>>(HeatBugs.class, "bugInitHeight");
     
     /*
      * Static member class to represent the model parameters, using object types so that setting them
