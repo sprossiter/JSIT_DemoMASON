@@ -20,9 +20,9 @@ package sim.app.heatbugs;
 
 import ec.util.MersenneTwisterFast;
 import uk.ac.soton.simulation.jsit.core.Distribution;
-import uk.ac.soton.simulation.jsit.core.Sampler;
+import uk.ac.soton.simulation.jsit.core.DummySampler;
 
-public class HeatBugsSampler extends Sampler {
+public class HeatBugsSampler extends DummySampler {
     
     // ************************** Class Fields *****************************************
 
@@ -63,27 +63,6 @@ public class HeatBugsSampler extends Sampler {
         
         return random.nextBoolean(p) == true ? 2 : 1;
         
-    }
-
-    @Override
-    protected double sampleExponential(double mean) {
-       
-        throw new UnsupportedOperationException();
-        
-    }
-
-    @Override
-    protected double sampleNormal(double mean, double sd) {
-        
-        throw new UnsupportedOperationException();
-        
-    }
-
-    @Override
-    protected double sampleUniform(double min, double max) {
-        
-        throw new UnsupportedOperationException();
-       
     }
 
     /*
